@@ -79,7 +79,7 @@ export GPDB_DATA_SOURCE_URL=postgres://gpadmin:gpadmin@10.17.20.11:5432/postgres
  图像配置请见：[对应文件](grafana/greenplum_dashboard.json)
  
  
--2 图形示例
+- 2 图形示例
 
 ![DEMO](doc/DEMO.PNG)
 
