@@ -36,6 +36,24 @@ export GPDB_DATA_SOURCE_URL=postgres://gpadmin:gpadmin@10.17.20.11:5432/postgres
 
 然后访问监控指标的URL地址： *http://127.0.0.1:9297/metrics*
 
+更多启动参数：
+
+```
+usage: greenplum_exporter [<flags>]
+
+Flags:
+  -h, --help                   Show context-sensitive help (also try --help-long and --help-man).
+      --web.listen-address="0.0.0.0:9297"  
+                               web endpoint
+      --web.telemetry-path="/metrics"  
+                               Path under which to expose metrics.
+      --disableDefaultMetrics  do not report default metrics(go metrics and process metrics)
+      --version                Show application version.
+      --log.level="info"       Only log messages with the given severity or above. Valid levels: [debug, info, warn, error, fatal]
+      --log.format="logger:stderr"  
+                               Set the log target and format. Example: "logger:syslog?appname=bob&local=7" or "logger:stdout?json=true"
+
+```
 
 ### 三、支持的监控指标
 
