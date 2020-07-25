@@ -1,0 +1,88 @@
+# Greenplum-exporter
+
+基于go语言为Greenplum6集成普罗米修斯(prometheus)的监控数据采集器。
+
+### 一、编译方法
+
+- linux系统下
+
+```
+git clone https://gitee.com/inrgihc/greenplum_exporter.git
+cd greenplum_exporter && make build
+cd bin && ls -l
+```
+
+- windows系统下
+
+```
+git clone https://gitee.com/inrgihc/greenplum_exporter.git
+cd .\greenplum_exporter\
+.\build.cmd
+cd bin && dir
+```
+
+
+### 二、 启动采集器
+
+- linux系统下
+
+```
+export GPDB_DATA_SOURCE_URL=postgres://gpadmin:gpadmin@10.17.20.11:5432/postgres?sslmode=disable
+./greenplum_exporter --web.listen-address="0.0.0.0:9297" --web.telemetry-path="/metrics" --log.level=error
+```
+注：请使用gpadmin账号连接postgres库。
+
+然后访问监控指标的URL地址： *http://127.0.0.1:9297/metrics*
+
+
+### 三、支持的监控指标
+
+| No. | 指标名称	| 类型 | 标签组 |	度量单位 |	指标描述	| 数据源获取方法 |
+|:----:|:----|:----|:----|:----|:----|:----|
+|  1 | greenplum_cluster_state	| Gauge| version; master(master主机名)；standby(standby主机名) | boolean	| gp 可达状态 ?：1→ 可用;0→ 不可用 | SELECT count(\*) from gp_dist_random('gp_id'); select version(); SELECT hostname from p_segment_configuration where content=-1 and role='p'; |
+|  2 | greenplum_cluster_uptime | Gauge | - | int | 启动持续的时间 | select extract(epoch from now() - pg_postmaster_start_time()); |
+|  3 | greenplum_cluster_sync | Gauge | - | int | Master同步Standby状态? 1→ 正常;0→ 异常 | SELECT count(*) from pg_stat_replication where state='streaming' |
+|  4 | greenplum_cluster_max_connections | Gauge | - | int | 最大连接个数 | show max_connections; show superuser_reserved_connections; |
+|  5 | greenplum_cluster_total_connections	| Gauge | - |	int |	当前连接个数	| select count(\*) total, count(\*) filter(where current_query='<IDLE>') idle, count(\*) filter(where current_query<>'<IDLE>') active, count(\*) filter(where current_query<>'<IDLE>' and not waiting) running, count(\*) filter(where current_query<>'<IDLE>' and waiting) waiting from pg_stat_activity where procpid <> pg_backend_pid(); |
+|  6 | greenplum_cluster_idle_connections | Gauge| - | int |	idle连接数 | 同上 |
+|  7 | greenplum_cluster_active_connections | Gauge | - | int | active query | 同上 |
+|  8 | greenplum_cluster_running_connections	| Gauge |	- | int |	query executing | 同上 |
+|  9 | greenplum_cluster_waiting_connections	| Gauge | - | int | query waiting execute | 同上 |
+| 10 | greenplum_node_segment_status | Gauge | hostname; address; dbid; content; preferred_role; port; replication_port | int	| segment的状态status: 1(U)→ up; 0(D)→ down | select * from gp_segment_configuration; |
+| 11 | greenplum_node_segment_role | Gauge | hostname; address; dbid; content; preferred_role; port; replication_port | int	| segment的role角色: 1(P)→ primary; 2(M)→ mirror | 同上 |
+| 12 | greenplum_node_segment_mode | Gauge | hostname; address; dbid; content; preferred_role; port; replication_port | int | segment的mode：1(S)→ Synced; 2(R)→ Resyncing; 3(C)→ Change Tracking; 4(N)→ Not Syncing | 同上|
+| 13 | greenplum_node_segment_disk_free_mb_size | Gauge | hostname | MB | segment主机磁盘空间剩余大小（MB) | SELECT dfhostname as segment_hostname,sum(dfspace)/count(dfspace)/(1024*1024) as segment_disk_free_gb from gp_toolkit.gp_disk_free GROUP BY dfhostname|
+| 14 | greenplum_cluster_total_connections_per_client | Gauge | client | int | 每个客户端的total连接数 |select usename, count(*) total, count(*) filter(where current_query='<IDLE>') idle, count(*) filter(where current_query<>'<IDLE>') active from pg_stat_activity group by 1; |
+| 15 | greenplum_cluster_idle_connections_per_client | Gauge | client |	int |	每个客户端的idle连接数 | 同上 |
+| 16 | greenplum_cluster_active_connections_per_client | Gauge | client |	int |	每个客户端的active连接数 | 同上 |
+| 17 | greenplum_cluster_total_online_user_count | Gauge	| - | int | 在线账号数 |	同上 |
+| 18 | greenplum_cluster_total_client_count  | Gauge | - |	int |	当前所有连接的客户端个数 | 同上 |
+| 19 | greenplum_cluster_total_connections_per_user | Gauge |	usename |	int |	每个账号的total连接数	| select client_addr, count(*) total, count(*) filter(where current_query='<IDLE>') idle, count(*) filter(where current_query<>'<IDLE>') active from pg_stat_activity group by 1; |
+| 20 | greenplum_cluster_idle_connections_per_user | Gauge | usename | int | 每个账号的idle连接数 | 同上 |
+| 21 | greenplum_cluster_active_connections_per_user | Gauge | usename | int | 每个账号的active连接数 | 同上 |
+| 22 | greenplum_cluster_config_last_load_time_seconds | Gauge	| - | int | 系统配置加载时间 |	SELECT pg_conf_load_time()  |
+| 23 | greenplum_node_database_name_mb_size | Gauge | dbname | MB | 每个数据库占用的存储空间大小 |  SELECT dfhostname as segment_hostname,sum(dfspace)/count(dfspace)/(1024*1024) as segment_disk_free_gb from gp_toolkit.gp_disk_free GROUP BY dfhostname |
+| 24 | greenplum_node_database_table_total_count | Gauge | dbname | - | 每个数据库内表的总数量 | SELECT count(*) as total from information_schema.tables where table_schema not in ('gp_toolkit','information_schema','pg_catalog');  |
+| 25 | greenplum_exporter_total_scraped | Counter	| -| int | - | - |
+| 26 | greenplum_exporter_total_error | Counter	| - | int	| - | - |
+| 27 | greenplum_exporter_scrape_duration_second | Gauge	| - | int | - |	- |
+| 28 | greenplum_server_users_name_list | Gauge	| - | int | 用户总数 |	SELECT usename from pg_catalog.pg_user; |
+| 29 | greenplum_server_users_total_count | Gauge	| - | int | 用户明细 |	同上 |
+| 30 | greenplum_server_locks_table_detail | Gauge	| pid;datname;usename;locktype;mode;application_name;state;lock_satus;query | int | 锁信息 |	 SELECT * from pg_locks |
+| 31 | greenplum_server_database_hit_cache_percent_rate | Gauge	| - | float | 缓存命中率 |	select sum(blks_hit)/(sum(blks_read)+sum(blks_hit))*100 from pg_stat_database; |
+| 32 | greenplum_server_database_transition_commit_percent_rate | Gauge	| - | float | 事务提交率 |	select sum(xact_commit)/(sum(xact_commit)+sum(xact_rollback))*100 from pg_stat_database; |
+
+### 四、使用Grafana展示
+
+- 1 图形配置
+
+ 图像配置请见：[对应文件](grafana/greenplum_dashboard.json)
+ 
+ 
+-2 图形示例
+
+![DEMO](doc/DEMO.PNG)
+
+### 五、问题反馈
+
+如果您看到或使用了本工具，或您觉得本工具对您有价值，请为此项目**点个赞**!!
