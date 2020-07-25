@@ -2,6 +2,8 @@
 
 基于go语言为Greenplum6集成普罗米修斯(prometheus)的监控数据采集器。
 
+关于Promethues与Grafana的安装配置可博客文章：https://blog.csdn.net/inrgihc/article/details/107049023
+
 ### 一、编译方法
 
 - linux系统下
