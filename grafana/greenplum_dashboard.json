@@ -15,8 +15,8 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 16,
-  "iteration": 1595654851189,
+  "id": 1,
+  "iteration": 1600530459905,
   "links": [],
   "panels": [
     {
@@ -167,6 +167,15 @@
               "to": "",
               "type": 1,
               "value": "1"
+            },
+            {
+              "from": "",
+              "id": 1,
+              "operator": "",
+              "text": "否",
+              "to": "",
+              "type": 1,
+              "value": "0"
             }
           ],
           "thresholds": {
@@ -1705,7 +1714,7 @@
       }
     }
   ],
-  "refresh": false,
+  "refresh": "5s",
   "schemaVersion": 25,
   "style": "dark",
   "tags": [],
@@ -1715,8 +1724,8 @@
         "allValue": null,
         "current": {
           "selected": false,
-          "text": "6.6.0",
-          "value": "6.6.0"
+          "text": "6.11.1",
+          "value": "6.11.1"
         },
         "datasource": "Prometheus",
         "definition": "label_values(greenplum_cluster_state, version)",
@@ -1759,5 +1768,5 @@
   "timezone": "",
   "title": "Greenplum集群监控状态图",
   "uid": "wsZrd9MMk",
-  "version": 238
+  "version": 2
 }
