@@ -2,7 +2,11 @@
 
 基于go语言为Greenplum6集成普罗米修斯(prometheus)的监控数据采集器。
 
-博客文章：https://blog.csdn.net/inrgihc/article/details/108686638
+**项目地址：**
+
+- Github: https://github.com/tangyibo/greenplum_exporter
+
+- Gitee: https://gitee.com/inrgihc/greenplum_exporter
 
 ### 一、编译方法
 
@@ -92,16 +96,9 @@ Flags:
 | 31 | greenplum_server_database_hit_cache_percent_rate | Gauge	| - | float | 缓存命中率 |	select sum(blks_hit)/(sum(blks_read)+sum(blks_hit))*100 from pg_stat_database; |
 | 32 | greenplum_server_database_transition_commit_percent_rate | Gauge	| - | float | 事务提交率 |	select sum(xact_commit)/(sum(xact_commit)+sum(xact_rollback))*100 from pg_stat_database; |
 
-### 四、使用Grafana展示
+### 四、安装部署教程
 
-- 1 图形配置
-
- 图像配置请见：[对应文件](grafana/greenplum_dashboard.json)
- 
- 
-- 2 图形示例
-
-![DEMO](doc/DEMO.PNG)
+博客文章：https://blog.csdn.net/inrgihc/article/details/108686638
 
 ### 五、问题反馈
 
