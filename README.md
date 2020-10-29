@@ -36,6 +36,14 @@ cd bin && dir
 export GPDB_DATA_SOURCE_URL=postgres://gpadmin:gpadmin@10.17.20.11:5432/postgres?sslmode=disable
 ./greenplum_exporter --web.listen-address="0.0.0.0:9297" --web.telemetry-path="/metrics" --log.level=error
 ```
+
+- docker运行
+
+```
+docker build -t inrgihc/greenplum6-exporter:latest .
+docker run -d -p 9297:9297 -e GPDB_DATA_SOURCE_URL=postgres://gpadmin:gpadmin@10.17.20.11:5432/postgres?sslmode=disable inrgihc/greenplum6-exporter:latest 
+```
+
 注：请使用gpadmin账号连接postgres库。
 
 然后访问监控指标的URL地址： *http://127.0.0.1:9297/metrics*
@@ -96,9 +104,9 @@ Flags:
 | 31 | greenplum_server_database_hit_cache_percent_rate | Gauge	| - | float | 缓存命中率 |	select sum(blks_hit)/(sum(blks_read)+sum(blks_hit))*100 from pg_stat_database; |
 | 32 | greenplum_server_database_transition_commit_percent_rate | Gauge	| - | float | 事务提交率 |	select sum(xact_commit)/(sum(xact_commit)+sum(xact_rollback))*100 from pg_stat_database; |
 
-### 四、安装部署教程
+### 四、使用教程
 
-博客文章：https://blog.csdn.net/inrgihc/article/details/108686638
+参考文章：https://blog.csdn.net/inrgihc/article/details/108686638
 
 ### 五、问题反馈
 
