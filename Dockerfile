@@ -6,4 +6,4 @@ COPY ./bin/greenplum_exporter /bin/greenplum_exporter
 
 EXPOSE      9297
 USER        root
-ENTRYPOINT  [ "/bin/greenplum_exporter" ]
+ENTRYPOINT  [ "/bin/greenplum_exporter" , "--log.level=error"]
