@@ -40,7 +40,6 @@ export GPDB_DATA_SOURCE_URL=postgres://gpadmin:gpadmin@10.17.20.11:5432/postgres
 - docker运行
 
 ```
-docker build -t inrgihc/greenplum6-exporter:latest .
 docker run -d -p 9297:9297 -e GPDB_DATA_SOURCE_URL=postgres://gpadmin:gpadmin@10.17.20.11:5432/postgres?sslmode=disable inrgihc/greenplum6-exporter:latest 
 ```
 
