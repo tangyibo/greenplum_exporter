@@ -13,15 +13,23 @@
 - linux系统下
 
 ```
-git clone https://gitee.com/inrgihc/greenplum_exporter.git
-cd greenplum_exporter && make build
+git clone https://github.com/tangyibo/greenplum_exporter
+cd greenplum_exporter/ && make build
 cd bin && ls -l
+```
+
+- docker环境下
+
+```
+https://github.com/tangyibo/greenplum_exporter
+cd greenplum_exporter/
+docker build -t inrgihc/greenplum6-exporter:latest .
 ```
 
 - windows系统下
 
 ```
-git clone https://gitee.com/inrgihc/greenplum_exporter.git
+git clone https://github.com/tangyibo/greenplum_exporter
 cd .\greenplum_exporter\
 .\build.cmd
 cd bin && dir
