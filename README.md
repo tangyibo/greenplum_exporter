@@ -21,7 +21,7 @@ cd bin && ls -l
 - docker环境下
 
 ```
-https://github.com/tangyibo/greenplum_exporter
+git clone https://github.com/tangyibo/greenplum_exporter
 cd greenplum_exporter/
 docker build -t inrgihc/greenplum6-exporter:latest .
 ```
