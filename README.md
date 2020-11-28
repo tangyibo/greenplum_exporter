@@ -10,8 +10,18 @@
 
 ### 一、编译方法
 
-- linux系统下
+- centos系统下
 
+(1) 环境安装
+```
+wget https://gomirrors.org/dl/go/go1.14.12.linux-amd64.tar.gz
+tar -C /usr/local -xzf go1.14.12.linux-amd64.tar.gz
+export PATH=$PATH:/usr/local/go/bin
+go env -w GO111MODULE=on
+go env -w GOPROXY=https://goproxy.io,direct
+```
+
+(2) 软件编译
 ```
 git clone https://github.com/tangyibo/greenplum_exporter
 cd greenplum_exporter/ && make build
@@ -26,19 +36,9 @@ cd greenplum_exporter/
 docker build -t inrgihc/greenplum6-exporter:latest .
 ```
 
-- windows系统下
-
-```
-git clone https://github.com/tangyibo/greenplum_exporter
-cd .\greenplum_exporter\
-.\build.cmd
-cd bin && dir
-```
-
-
 ### 二、 启动采集器
 
-- linux系统下
+- centos系统下
 
 ```
 export GPDB_DATA_SOURCE_URL=postgres://gpadmin:gpadmin@10.17.20.11:5432/postgres?sslmode=disable
