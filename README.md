@@ -41,17 +41,21 @@ docker build -t inrgihc/greenplum6-exporter:latest .
 - centos系统下
 
 ```
-export GPDB_DATA_SOURCE_URL=postgres://gpadmin:gpadmin@10.17.20.11:5432/postgres?sslmode=disable
+export GPDB_DATA_SOURCE_URL=postgres://gpadmin:password@10.17.20.11:5432/postgres?sslmode=disable
 ./greenplum_exporter --web.listen-address="0.0.0.0:9297" --web.telemetry-path="/metrics" --log.level=error
 ```
 
 - docker运行
 
 ```
-docker run -d -p 9297:9297 -e GPDB_DATA_SOURCE_URL=postgres://gpadmin:gpadmin@10.17.20.11:5432/postgres?sslmode=disable inrgihc/greenplum6-exporter:latest 
+docker run -d -p 9297:9297 -e GPDB_DATA_SOURCE_URL=postgres://gpadmin:password@10.17.20.11:5432/postgres?sslmode=disable inrgihc/greenplum6-exporter:latest 
 ```
 
-注：请使用gpadmin账号连接postgres库。
+注：环境变量GPDB_DATA_SOURCE_URL指定了连接Greenplum数据库的连接串（请使用gpadmin账号连接postgres库），该连接串以postgres://为前缀，具体格式如下：
+```
+postgres://gpadmin:password@10.17.20.11:5432/postgres?sslmode=disable
+postgres://[数据库连接账号，必须为gpadmin]:[账号密码，即gpadmin的密码]@[数据库的IP地址]:[数据库端口号]/[数据库名称，必须为postgres]?[参数名]=[参数值]&[参数名]=[参数值]
+```
 
 然后访问监控指标的URL地址： *http://127.0.0.1:9297/metrics*
 
