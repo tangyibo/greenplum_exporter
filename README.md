@@ -23,7 +23,7 @@ go env -w GOPROXY=https://goproxy.io,direct
 
 (2) 软件编译
 ```
-git clone https://github.com/tangyibo/greenplum_exporter
+git clone -b gpdb6.x https://github.com/tangyibo/greenplum_exporter
 cd greenplum_exporter/ && make build
 cd bin && ls -l
 ```
@@ -31,7 +31,7 @@ cd bin && ls -l
 - docker环境下
 
 ```
-git clone https://github.com/tangyibo/greenplum_exporter
+git clone -b gpdb6.x https://github.com/tangyibo/greenplum_exporter
 cd greenplum_exporter/
 docker build -t inrgihc/greenplum6-exporter:latest .
 ```
