@@ -1,6 +1,6 @@
 # Greenplum-exporter
 
-基于go语言为Greenplum6集成普罗米修斯(prometheus)的监控数据采集器。
+基于go语言为Greenplum集成普罗米修斯(prometheus)的监控数据采集器。
 
 **项目地址：**
 
