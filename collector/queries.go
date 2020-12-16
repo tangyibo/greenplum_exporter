@@ -46,7 +46,7 @@ func (queriesScraper) Name() string {
 	return "queriesScraper"
 }
 
-func (queriesScraper) Scrape(db *sql.DB, ch chan<- prometheus.Metric) error {
+func (queriesScraper) Scrape(db *sql.DB, ch chan<- prometheus.Metric, ver int) error {
 	rows, err := db.Query(queriesSql)
 	logger.Infof("Query Database: %s",queriesSql)
 

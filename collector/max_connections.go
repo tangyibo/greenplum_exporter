@@ -35,7 +35,7 @@ func (maxConnScraper) Name() string {
 	return "max_connection_scraper"
 }
 
-func (maxConnScraper) Scrape(db *sql.DB, ch chan<- prometheus.Metric) error {
+func (maxConnScraper) Scrape(db *sql.DB, ch chan<- prometheus.Metric, ver int) error {
 	maxConn, err := showConnections(db, maxConnectionsSql)
 
 	if err != nil {

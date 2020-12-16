@@ -12,8 +12,10 @@ import (
 // （1） https://zhmin.github.io/2019/11/27/postgresql-bg-writer/
 // （2） https://zhmin.github.io/2019/11/24/postgresql-checkpoint/
 const (
-	statBgwriterSql = ` SELECT checkpoints_timed, checkpoints_req, checkpoint_write_time, checkpoint_sync_time, buffers_checkpoint
- 			, buffers_clean, maxwritten_clean, buffers_backend, buffers_backend_fsync, buffers_alloc, stats_reset FROM pg_stat_bgwriter`
+	statBgwriterSql_V6 = ` SELECT checkpoints_timed, checkpoints_req, checkpoint_write_time, checkpoint_sync_time, buffers_checkpoint
+			 , buffers_clean, maxwritten_clean, buffers_backend, buffers_backend_fsync, buffers_alloc, stats_reset FROM pg_stat_bgwriter`
+	statBgwriterSql_V5 = ` SELECT checkpoints_timed, checkpoints_req, 0 as checkpoint_write_time, 0 as checkpoint_sync_time, buffers_checkpoint
+			 , buffers_clean, maxwritten_clean, buffers_backend, 0 as buffers_backend_fsync, buffers_alloc, '2020-06-16 22:09:47.078+08'::timestamp as stats_reset FROM pg_stat_bgwriter;`
 )
 
 var (
@@ -105,9 +107,14 @@ func (bgWriterStateScraper) Name() string {
 	return "bg_writer_state_scraper"
 }
 
-func (bgWriterStateScraper) Scrape(db *sql.DB, ch chan<- prometheus.Metric) error {
-	rows, err := db.Query(statBgwriterSql)
-	logger.Infof("Query Database: %s", statBgwriterSql)
+func (bgWriterStateScraper) Scrape(db *sql.DB, ch chan<- prometheus.Metric, ver int) error {
+	querySql :=statBgwriterSql_V6;
+	if ver < 6{
+		querySql=statBgwriterSql_V5;
+	}
+
+	rows, err := db.Query(querySql)
+	logger.Infof("Query Database: %s", querySql)
 
 	if err != nil {
 		ch <- prometheus.MustNewConstMetric(stateDesc, prometheus.GaugeValue, 0, "", "")

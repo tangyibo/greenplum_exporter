@@ -15,5 +15,5 @@ type Scraper interface {
 	Name() string
 
 	// 从数据库连接中获取数据信息，并发送到数据类型为prometheus metric的通道里.
-	Scrape(db *sql.DB, ch chan<- prometheus.Metric) error
+	Scrape(db *sql.DB, ch chan<- prometheus.Metric, ver int) error
 }
