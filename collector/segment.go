@@ -14,7 +14,9 @@ import (
  */
 
 const (
-	segmentConfigSql       = `select dbid,content,role,preferred_role,mode,status,port,hostname,address,datadir from gp_segment_configuration;`
+	segmentConfigSql_V6       = `select dbid,content,role,preferred_role,mode,status,port,hostname,address,datadir from gp_segment_configuration;`
+	segmentConfigSql_V5       = `select dbid,content,role,preferred_role,mode,status,port,hostname,address,null as datadir from gp_segment_configuration;`
+
 	segmentDiskFreeSizeSql = `SELECT dfhostname as segment_hostname,sum(dfspace)/count(dfspace)/(1024*1024) as segment_disk_free_gb from gp_toolkit.gp_disk_free GROUP BY dfhostname;`
 )
 
@@ -55,21 +57,26 @@ func (segmentScraper) Name() string {
 	return "segment_scraper"
 }
 
-func (segmentScraper) Scrape(db *sql.DB, ch chan<- prometheus.Metric) error {
-	errU := scrapeSegmentConfig(db, ch)
+func (segmentScraper) Scrape(db *sql.DB, ch chan<- prometheus.Metric, ver int) error {
+	errU := scrapeSegmentConfig(db, ch, ver)
 	errC := scrapeSegmentDiskFree(db, ch)
 
 	return combineErr(errC, errU)
 }
 
-func scrapeSegmentConfig(db *sql.DB, ch chan<- prometheus.Metric) error {
+func scrapeSegmentConfig(db *sql.DB, ch chan<- prometheus.Metric, ver int) error {
 	ctx := context.Background()
 	ctx, cancel := context.WithTimeout(ctx, time.Second*2)
 
 	defer cancel()
 
-	logger.Infof("Query Database: %s", segmentConfigSql)
-	rows, err := db.QueryContext(ctx, segmentConfigSql)
+	querySql:=segmentConfigSql_V6
+	if ver < 6{
+		querySql=segmentConfigSql_V5;
+	}
+
+	logger.Infof("Query Database: %s", querySql)
+	rows, err := db.QueryContext(ctx, querySql)
 
 	if err != nil {
 		return err

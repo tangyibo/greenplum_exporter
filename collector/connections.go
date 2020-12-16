@@ -12,13 +12,20 @@ import (
  */
 
 const (
-	connectionsSql = `select 
+	connectionsSql_V6 = `select 
                          count(*) total, 
                          count(*) filter(where query='<IDLE>') idle, 
                          count(*) filter(where query<>'<IDLE>') active,
                          count(*) filter(where query<>'<IDLE>' and not waiting) running,
                          count(*) filter(where query<>'<IDLE>' and waiting) waiting
-                         from pg_stat_activity where pid <> pg_backend_pid();`
+						 from pg_stat_activity where pid <> pg_backend_pid();`
+	connectionsSql_V5 = `select 
+                         count(*) total, 
+                         count(*) filter(where current_query='<IDLE>') idle, 
+                         count(*) filter(where current_query<>'<IDLE>') active,
+                         count(*) filter(where current_query<>'<IDLE>' and not waiting) running,
+                         count(*) filter(where current_query<>'<IDLE>' and waiting) waiting
+                         from pg_stat_activity where procpid <> pg_backend_pid();`
 )
 
 var (
@@ -63,9 +70,14 @@ func (connectionsScraper) Name() string {
 	return "connections_scraper"
 }
 
-func (connectionsScraper) Scrape(db *sql.DB, ch chan<- prometheus.Metric) error {
-	rows, err := db.Query(connectionsSql)
-	logger.Infof("Query Database: %s",connectionsSql)
+func (connectionsScraper) Scrape(db *sql.DB, ch chan<- prometheus.Metric, ver int) error {
+	querySql:=connectionsSql_V6
+	if ver < 6{
+		querySql=connectionsSql_V5;
+	}
+
+	rows, err := db.Query(querySql)
+	logger.Infof("Query Database: %s",querySql)
 
 	if err != nil {
 		return err

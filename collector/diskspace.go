@@ -45,7 +45,7 @@ func (diskScraper) Name() string {
 	return "filesystem_scraper"
 }
 
-func (diskScraper) Scrape(db *sql.DB, ch chan<- prometheus.Metric) error {
+func (diskScraper) Scrape(db *sql.DB, ch chan<- prometheus.Metric, ver int) error {
 	rows, err := db.Query(fileSystemSql)
 	logger.Infof("Query Database: %s",fileSystemSql)
 

@@ -10,7 +10,7 @@
 
 ### 一、编译方法
 
-- centos系统下
+- centos系统下编译
 
 (1) 环境安装
 ```
@@ -23,17 +23,17 @@ go env -w GOPROXY=https://goproxy.io,direct
 
 (2) 软件编译
 ```
-git clone -b gpdb6.x https://github.com/tangyibo/greenplum_exporter
+git clone https://github.com/tangyibo/greenplum_exporter
 cd greenplum_exporter/ && make build
 cd bin && ls -l
 ```
 
-- docker环境下
+- docker环境下编译
 
 ```
-git clone -b gpdb6.x https://github.com/tangyibo/greenplum_exporter
+git clone https://github.com/tangyibo/greenplum_exporter
 cd greenplum_exporter/
-docker build -t inrgihc/greenplum6-exporter:latest .
+sh docker-build.sh
 ```
 
 ### 二、 启动采集器
@@ -48,7 +48,7 @@ export GPDB_DATA_SOURCE_URL=postgres://gpadmin:password@10.17.20.11:5432/postgre
 - docker运行
 
 ```
-docker run -d -p 9297:9297 -e GPDB_DATA_SOURCE_URL=postgres://gpadmin:password@10.17.20.11:5432/postgres?sslmode=disable inrgihc/greenplum6-exporter:latest 
+docker run -d -p 9297:9297 -e GPDB_DATA_SOURCE_URL=postgres://gpadmin:password@10.17.20.11:5432/postgres?sslmode=disable inrgihc/greenplum-exporter:latest 
 ```
 
 注：环境变量GPDB_DATA_SOURCE_URL指定了连接Greenplum数据库的连接串（请使用gpadmin账号连接postgres库），该连接串以postgres://为前缀，具体格式如下：
@@ -114,6 +114,7 @@ Flags:
 | 30 | greenplum_server_locks_table_detail | Gauge	| pid;datname;usename;locktype;mode;application_name;state;lock_satus;query | int | 锁信息 |	 SELECT * from pg_locks |
 | 31 | greenplum_server_database_hit_cache_percent_rate | Gauge	| - | float | 缓存命中率 |	select sum(blks_hit)/(sum(blks_read)+sum(blks_hit))*100 from pg_stat_database; |
 | 32 | greenplum_server_database_transition_commit_percent_rate | Gauge	| - | float | 事务提交率 |	select sum(xact_commit)/(sum(xact_commit)+sum(xact_rollback))*100 from pg_stat_database; |
+| 32 | greenplum_server_database_table_bloat_list | Gauge	| - | int | 数据膨胀列表 |	select * from gp_toolkit.gp_bloat_diag; |
 
 ### 四、使用教程
 

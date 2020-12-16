@@ -19,7 +19,8 @@ const (
 	standbyNameSql    = `SELECT hostname from gp_segment_configuration where content=-1 and role='m'`
 	upTimeSql         = `select extract(epoch from now() - pg_postmaster_start_time())`
 	syncSql           = `SELECT count(*) from pg_stat_replication where state='streaming'`
-	configLoadTimeSql = `SELECT pg_conf_load_time() `
+	configLoadTimeSql_V6 = `SELECT pg_conf_load_time() `
+	configLoadTimeSql_V5 = `select '2020-06-16 22:09:47.078+08'::timestamp as pg_conf_load_time; `
 )
 
 var (
@@ -61,7 +62,7 @@ func (clusterStateScraper) Name() string {
 	return "cluster_state_scraper"
 }
 
-func (clusterStateScraper) Scrape(db *sql.DB, ch chan<- prometheus.Metric) error {
+func (clusterStateScraper) Scrape(db *sql.DB, ch chan<- prometheus.Metric, ver int) error {
 	rows, err := db.Query(checkStateSql)
 	logger.Infof("Query Database: %s", checkStateSql)
 
@@ -88,7 +89,7 @@ func (clusterStateScraper) Scrape(db *sql.DB, ch chan<- prometheus.Metric) error
 	standby, errX := scrapeStandby(db)
 	upTime, errU := scrapeUpTime(db)
 	sync, errW := scrapeSync(db)
-	configLoadTime, errY := scrapeConfigLoadTime(db)
+	configLoadTime, errY := scrapeConfigLoadTime(db, ver)
 
 	ch <- prometheus.MustNewConstMetric(stateDesc, prometheus.GaugeValue, 1, version, master, standby)
 	ch <- prometheus.MustNewConstMetric(upTimeDesc, prometheus.GaugeValue, upTime)
@@ -195,9 +196,14 @@ func scrapeSync(db *sql.DB) (sync float64, err error) {
 	return
 }
 
-func scrapeConfigLoadTime(db *sql.DB) (time time.Time, err error) {
-	rows, err := db.Query(configLoadTimeSql)
-	logger.Infof("Query Database Config load Time : %s", configLoadTimeSql)
+func scrapeConfigLoadTime(db *sql.DB, ver int) (time time.Time, err error) {
+	querySql:=configLoadTimeSql_V6
+	if ver < 6{
+		querySql=configLoadTimeSql_V5;
+	}
+
+	rows, err := db.Query(querySql)
+	logger.Infof("Query Database Config load Time : %s", querySql)
 
 	if err != nil {
 		return

@@ -12,13 +12,14 @@ import (
 	"time"
 )
 
-const checkSql = `select 'OK'`
+const verMajorSql=`select (select regexp_matches((select (select regexp_matches((select version()), 'Greenplum Database \d{1,}\.\d{1,}\.\d{1,}'))[1] as version), '\d{1,}'))[1];`
 
 // 定义采集器数据类型结构体
 type GreenPlumCollector struct {
 	mu sync.Mutex
 
 	db       *sql.DB
+	ver       int
 	metrics  *ExporterMetrics
 	scrapers []Scraper
 }
@@ -93,7 +94,7 @@ func (c *GreenPlumCollector) scrape(ch chan<- prometheus.Metric) {
 	for _, scraper := range c.scrapers {
 		logger.Info("#### scraping start : " + scraper.Name())
 		watch.MustStart("scraping: " + scraper.Name())
-		err := scraper.Scrape(c.db, ch)
+		err := scraper.Scrape(c.db, ch, c.ver)
 		watch.MustStop()
 		if err != nil {
 			logger.Errorf("get metrics for scraper:%s failed, error:%v", scraper.Name(), err.Error())
@@ -115,7 +116,7 @@ func (c *GreenPlumCollector) checkGreenPlumConn() (err error) {
 		return c.getGreenPlumConnection()
 	}
 
-	if err = checkGreenPlumConnections(c.db); err == nil {
+	if err = c.getGreenplumMajorVersion(c.db); err == nil {
 		return nil
 	} else {
 		_ = c.db.Close()
@@ -139,7 +140,7 @@ func (c *GreenPlumCollector) getGreenPlumConnection() error {
 		return err
 	}
 
-	if err = checkGreenPlumConnections(db); err != nil {
+	if err = c.getGreenplumMajorVersion(db); err != nil {
 		_ = db.Close()
 		return err
 	}
@@ -153,20 +154,30 @@ func (c *GreenPlumCollector) getGreenPlumConnection() error {
 }
 
 /**
-* 函数：checkGreenPlumConnections
-* 功能：使用检测SQL检查Greenplum的连接
+* 函数：getGreenplumMajorVersion
+* 功能：获取Greenplum数据库的主版本号
  */
-func checkGreenPlumConnections(db *sql.DB) error {
+func (c *GreenPlumCollector) getGreenplumMajorVersion(db *sql.DB) error {
 	err := db.Ping()
 
 	if err != nil {
 		return err
 	}
 
-	rows, err := db.Query(checkSql)
+	rows, err := db.Query(verMajorSql)
 
 	if err != nil {
 		return err
+	}
+
+	for rows.Next() {
+		var verMajor int
+		errC := rows.Scan(&verMajor)
+		if errC != nil {
+			return errC
+		}
+
+		c.ver=verMajor
 	}
 
 	defer rows.Close()

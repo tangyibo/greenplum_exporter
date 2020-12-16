@@ -11,16 +11,26 @@ import (
  */
 
 const (
-	connectionsByUserSql = `select usename, 
+	connectionsByUserSql_V6 = `select usename, 
                                       count(*) total, 
                                       count(*) filter(where query='<IDLE>') idle, 
                                       count(*) filter(where query<>'<IDLE>') active 
+							   from pg_stat_activity group by 1;`
+	connectionsByUserSql_V5 = `select usename, 
+                                      count(*) total, 
+                                      count(*) filter(where current_query='<IDLE>') idle, 
+                                      count(*) filter(where current_query<>'<IDLE>') active 
                                from pg_stat_activity group by 1;`
-	connectionsByClientAddressSql = `select client_addr,
+	connectionsByClientAddressSql_V6 = `select client_addr,
+                                        count(*) total,
+                                        count(*) filter(where query='<IDLE>') idle,
+                                        count(*) filter(where query<>'<IDLE>') active
+								from pg_stat_activity where pid <> pg_backend_pid() group by 1;`
+	connectionsByClientAddressSql_V5 = `select client_addr,
                                                count(*) total,
-                                               count(*) filter(where query='<IDLE>') idle,
-                                               count(*) filter(where query<>'<IDLE>') active
-                                        from pg_stat_activity where pid <> pg_backend_pid() group by 1;`
+                                               count(*) filter(where current_query='<IDLE>') idle,
+                                               count(*) filter(where current_query<>'<IDLE>') active
+                                from pg_stat_activity where procpid <> pg_backend_pid() group by 1;`
 )
 
 var (
@@ -83,16 +93,22 @@ func (connectionsDetailScraper) Name() string {
 	return "connections_detail_scraper"
 }
 
-func (connectionsDetailScraper) Scrape(db *sql.DB, ch chan<- prometheus.Metric) error {
-	errU := scrapeLoadByUser(db, ch)
-	errC := scrapeLoadByClient(db, ch)
+func (connectionsDetailScraper) Scrape(db *sql.DB, ch chan<- prometheus.Metric, ver int) error {
+	errU := scrapeLoadByUser(db, ch, ver)
+	errC := scrapeLoadByClient(db, ch, ver)
 
 	return combineErr(errC, errU)
 }
 
-func scrapeLoadByUser(db *sql.DB, ch chan<- prometheus.Metric) error {
-	rows, err := db.Query(connectionsByUserSql)
-	logger.Infof("Query Database: %s", connectionsByUserSql)
+func scrapeLoadByUser(db *sql.DB, ch chan<- prometheus.Metric, ver int) error {
+	querySql:=connectionsByUserSql_V6
+	if ver < 6{
+		querySql=connectionsByUserSql_V5;
+	}
+
+	rows, err := db.Query(querySql)
+
+	logger.Infof("Query Database: %s", querySql)
 
 	if err != nil {
 		return err
@@ -126,8 +142,13 @@ func scrapeLoadByUser(db *sql.DB, ch chan<- prometheus.Metric) error {
 	return combineErr(errs...)
 }
 
-func scrapeLoadByClient(db *sql.DB, ch chan<- prometheus.Metric) error {
-	rows, err := db.Query(connectionsByClientAddressSql)
+func scrapeLoadByClient(db *sql.DB, ch chan<- prometheus.Metric, ver int) error {
+	querySql:=connectionsByClientAddressSql_V6
+	if ver < 6{
+		querySql=connectionsByClientAddressSql_V5;
+	}
+
+	rows, err := db.Query(querySql)
 
 	if err != nil {
 		return err
