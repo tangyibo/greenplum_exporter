@@ -12,7 +12,7 @@ import (
 )
 
 /**
- *  各个数据库存储大小、数据膨胀列表、缓存命中率、事务提交率等
+ *  各个数据库存储大小、数据膨胀列表、数据倾斜列表、缓存命中率、事务提交率等
  */
 
 const (
@@ -26,6 +26,29 @@ const (
 			else 0 
 		end) as bloat_state 
 		FROM gp_toolkit.gp_bloat_diag ORDER BY bloat_state desc
+	`
+	skewTableSql=`
+		SELECT current_database(),schema_name,table_name,max_div_avg,pg_size_pretty(total_size) table_size 
+		FROM (
+			SELECT schema_name,table_name,
+				MAX(size)/(AVG(size)+0.001) AS max_div_avg,
+				CAST(SUM(size) AS BIGINT) total_size
+			FROM
+				(
+			SELECT o.gp_segment_id,
+						n.nspname as schema_name,
+						o.relname as table_name,
+						pg_relation_size(o.oid) size
+				FROM gp_dist_random('pg_class') o
+					LEFT JOIN pg_namespace n on o.relnamespace=n.oid
+				WHERE o.relkind='r'
+				AND o.relstorage IN ('a','h')
+			) t
+			GROUP BY schema_name,table_name
+			)tab 
+		WHERE total_size >= 104857600
+		AND max_div_avg>1.5
+		ORDER BY total_size DESC;
 	`
 	hitCacheRateSql = `select sum(blks_hit)/(sum(blks_read)+sum(blks_hit))*100 from pg_stat_database;`
 	txCommitRateSql = `select sum(xact_commit)/(sum(xact_commit)+sum(xact_rollback))*100 from pg_stat_database;`
@@ -50,6 +73,13 @@ var (
 		prometheus.BuildFQName(namespace, subSystemServer, "database_table_bloat_list"),
 		"Bloat table list of each database name in greenplum cluster",
 		[]string{"dbname","schema","table","relpages","exppages"},
+		nil,
+	)
+
+	skewTableDesc = prometheus.NewDesc(
+		prometheus.BuildFQName(namespace, subSystemServer, "database_table_skew_list"),
+		"Skew table list of each database name in greenplum cluster",
+		[]string{"dbname","schema","table","size"},
 		nil,
 	)
 
@@ -171,6 +201,12 @@ func queryTablesCount(dbname string,ch chan<- prometheus.Metric) (count float64,
 		return
 	}
 
+	errF := querySkewTables(conn, ch)
+	if errF != nil {
+		err=errF
+		return
+	}
+
 	return
 }
 
@@ -196,6 +232,33 @@ func queryBloatTables(conn *sql.DB, ch chan<- prometheus.Metric) error {
 		}
 
 		ch <- prometheus.MustNewConstMetric(bloatTableDesc, prometheus.GaugeValue, bloatstate, dbname, schema, table, relpages, exppages)
+	}
+
+	return combineErr(errs...)
+}
+
+func querySkewTables(conn *sql.DB, ch chan<- prometheus.Metric) error {
+	rows, err := conn.Query(skewTableSql)
+	logger.Infof("Query skew tables sql: %s", skewTableSql)
+
+	if err != nil {
+		return err
+	}
+
+	defer rows.Close()
+
+	errs := make([]error, 0)
+
+	for rows.Next() {
+		var dbname, schema, table , size string
+		var slope float64
+		err = rows.Scan(&dbname,&schema,&table,&slope,&size)
+		if err != nil {
+			errs = append(errs, err)
+			continue
+		}
+
+		ch <- prometheus.MustNewConstMetric(skewTableDesc, prometheus.GaugeValue, slope, dbname, schema, table, size)
 	}
 
 	return combineErr(errs...)
