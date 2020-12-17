@@ -115,6 +115,7 @@ Flags:
 | 31 | greenplum_server_database_hit_cache_percent_rate | Gauge	| - | float | 缓存命中率 |	select sum(blks_hit)/(sum(blks_read)+sum(blks_hit))*100 from pg_stat_database; |
 | 32 | greenplum_server_database_transition_commit_percent_rate | Gauge	| - | float | 事务提交率 |	select sum(xact_commit)/(sum(xact_commit)+sum(xact_rollback))*100 from pg_stat_database; |
 | 32 | greenplum_server_database_table_bloat_list | Gauge	| - | int | 数据膨胀列表 |	select * from gp_toolkit.gp_bloat_diag; |
+| 33 | greenplum_server_database_table_skew_list | Gauge	| - | int | 数据倾斜列表 |	select * from  gp_toolkit.gp_skew_coefficients; |
 
 ### 四、使用教程
 

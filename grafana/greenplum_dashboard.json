@@ -16,12 +16,12 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 1,
-  "iteration": 1600530459905,
+  "iteration": 1608169350750,
   "links": [],
   "panels": [
     {
       "datasource": "Prometheus",
-      "description": "",
+      "description": "Greenplum截至到当前的运行总时长",
       "fieldConfig": {
         "defaults": {
           "custom": {},
@@ -80,7 +80,7 @@
     },
     {
       "datasource": "Prometheus",
-      "description": "",
+      "description": "Greenplum集群的Master节点是否可连通",
       "fieldConfig": {
         "defaults": {
           "custom": {},
@@ -155,6 +155,7 @@
     },
     {
       "datasource": "Prometheus",
+      "description": "Greenplum集群的Standby节点是否正在保持与Master的同步",
       "fieldConfig": {
         "defaults": {
           "custom": {},
@@ -230,6 +231,7 @@
     {
       "content": "<font size=10><center>$version</center></font>\n\n\n",
       "datasource": "Prometheus",
+      "description": "Greenplum的版本号",
       "fieldConfig": {
         "defaults": {
           "custom": {},
@@ -274,7 +276,7 @@
     },
     {
       "datasource": "Prometheus",
-      "description": "",
+      "description": "当前连接总数",
       "fieldConfig": {
         "defaults": {
           "custom": {},
@@ -331,7 +333,7 @@
     },
     {
       "datasource": "Prometheus",
-      "description": "",
+      "description": "Greenplum数据存储节点的剩余可用存储空间",
       "fieldConfig": {
         "defaults": {
           "custom": {},
@@ -388,6 +390,7 @@
     },
     {
       "datasource": "Prometheus",
+      "description": "数据库配置最近加载时间",
       "fieldConfig": {
         "defaults": {
           "custom": {},
@@ -449,6 +452,7 @@
     },
     {
       "datasource": "Prometheus",
+      "description": "当前在线连接的账号总个数",
       "fieldConfig": {
         "defaults": {
           "custom": {},
@@ -505,6 +509,7 @@
     },
     {
       "datasource": "Prometheus",
+      "description": "当前数据库的客户端总数（按IP统计）",
       "fieldConfig": {
         "defaults": {
           "custom": {},
@@ -563,6 +568,7 @@
     },
     {
       "datasource": "Prometheus",
+      "description": "数据库当前的用户账号总个数",
       "fieldConfig": {
         "defaults": {
           "custom": {},
@@ -622,6 +628,7 @@
     },
     {
       "datasource": "Prometheus",
+      "description": "数据库关注指标",
       "fieldConfig": {
         "defaults": {
           "custom": {},
@@ -690,6 +697,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "Prometheus",
+      "description": "展示客户端连接数的历史趋势信息",
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -715,7 +723,7 @@
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
-        "h": 9,
+        "h": 10,
         "w": 12,
         "x": 12,
         "y": 6
@@ -807,7 +815,7 @@
       "dashes": false,
       "datasource": "Prometheus",
       "decimals": 0,
-      "description": "",
+      "description": "展示各个账号的活动连接数趋势信息",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -903,118 +911,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "Prometheus",
-      "fieldConfig": {
-        "defaults": {
-          "custom": {},
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "fill": 1,
-      "fillGradient": 2,
-      "gridPos": {
-        "h": 9,
-        "w": 12,
-        "x": 12,
-        "y": 15
-      },
-      "hiddenSeries": false,
-      "id": 12,
-      "legend": {
-        "alignAsTable": true,
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "rightSide": true,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 5,
-      "nullPointMode": "null",
-      "options": {
-        "dataLinks": []
-      },
-      "percentage": false,
-      "pluginVersion": "7.0.5",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "expr": "greenplum_cluster_active_connections_per_user",
-          "interval": "",
-          "legendFormat": "{{usename}}",
-          "refId": "A"
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "在线账号连接数分析图",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "short",
-          "label": "连接数",
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "Prometheus",
-      "description": "",
+      "description": "展示各数据库内表的总数目历史趋势信息",
       "fieldConfig": {
         "defaults": {
           "custom": {},
@@ -1121,7 +1018,120 @@
       }
     },
     {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
       "datasource": "Prometheus",
+      "description": "展示在线账号连接数的历史趋势信息",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 2,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 16
+      },
+      "hiddenSeries": false,
+      "id": 12,
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 5,
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pluginVersion": "7.0.5",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "greenplum_cluster_active_connections_per_user",
+          "interval": "",
+          "legendFormat": "{{usename}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "在线账号连接数分析图",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": "连接数",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "datasource": "Prometheus",
+      "description": "展示集群当前各库内表总数目",
       "fieldConfig": {
         "defaults": {
           "custom": {},
@@ -1178,6 +1188,7 @@
     },
     {
       "datasource": "Prometheus",
+      "description": "展示当前各库占用数据存储空间大小的柱状图",
       "fieldConfig": {
         "defaults": {
           "custom": {},
@@ -1236,7 +1247,7 @@
     {
       "cacheTimeout": null,
       "datasource": "Prometheus",
-      "description": "",
+      "description": "列举集群的Segment实例在线状态",
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -1352,7 +1363,7 @@
     },
     {
       "datasource": "Prometheus",
-      "description": "",
+      "description": "列举集群的Segment实例同步模式",
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -1478,7 +1489,7 @@
     },
     {
       "datasource": "Prometheus",
-      "description": "",
+      "description": "列举了当前监听的客户端访问数据库操作时的锁信息",
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -1676,7 +1687,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "各库耗用存储速率",
+      "title": "各库耗用存储瞬时速率",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -1712,6 +1723,254 @@
         "align": false,
         "alignLevel": null
       }
+    },
+    {
+      "datasource": null,
+      "description": "列举存在膨胀数据表的信息(需要数据库后端定期或定时使用analyzedb工具分析生成统计数据)",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": null,
+            "displayMode": "color-text"
+          },
+          "mappings": [
+            {
+              "from": "",
+              "id": 0,
+              "operator": "",
+              "text": "严重膨胀",
+              "to": "",
+              "type": 1,
+              "value": "2"
+            },
+            {
+              "from": "",
+              "id": 1,
+              "operator": "",
+              "text": "中度膨胀",
+              "to": "",
+              "type": 1,
+              "value": "1"
+            },
+            {
+              "from": "",
+              "id": 2,
+              "operator": "",
+              "text": "轻微膨胀",
+              "to": "",
+              "type": 1,
+              "value": "0"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 2
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "期望页数"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 71
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "实际页数"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 116
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 54
+      },
+      "id": 48,
+      "options": {
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "7.0.5",
+      "targets": [
+        {
+          "expr": "greenplum_server_database_table_bloat_list",
+          "format": "table",
+          "instant": true,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "膨胀垃圾数据表",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {
+              "Time": 6,
+              "Value": 5,
+              "__name__": 7,
+              "dbname": 0,
+              "exppages": 3,
+              "instance": 8,
+              "job": 9,
+              "relpages": 4,
+              "schema": 1,
+              "table": 2
+            },
+            "renameByName": {
+              "Value": "膨胀状态",
+              "__name__": "",
+              "dbname": "数据库",
+              "exppages": "期望页数",
+              "relpages": "实际页数",
+              "schema": "模式名",
+              "table": "表名"
+            }
+          }
+        },
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "数据库",
+                "期望页数",
+                "实际页数",
+                "模式名",
+                "表名",
+                "膨胀状态"
+              ]
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": null,
+      "description": "描述表数据均匀分布在各个存储节点的程度，这里只展示数据总大小大于1000M且倾斜率大于1.5%的表。",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": null,
+            "displayMode": "color-background"
+          },
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 5
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 54
+      },
+      "id": 50,
+      "options": {
+        "showHeader": true
+      },
+      "pluginVersion": "7.0.5",
+      "targets": [
+        {
+          "expr": "greenplum_server_database_table_skew_list",
+          "format": "table",
+          "instant": true,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "存储倾斜数据表",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {
+              "Time": 5,
+              "Value": 4,
+              "__name__": 6,
+              "dbname": 0,
+              "instance": 7,
+              "job": 8,
+              "schema": 1,
+              "size": 3,
+              "table": 2
+            },
+            "renameByName": {
+              "Time": "",
+              "Value": "倾斜率",
+              "__name__": "",
+              "dbname": "数据库名",
+              "instance": "",
+              "job": "",
+              "schema": "模式名称",
+              "size": "表大小",
+              "table": "表名称"
+            }
+          }
+        },
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "数据库名",
+                "模式名称",
+                "表名称",
+                "表大小",
+                "倾斜率"
+              ]
+            }
+          }
+        }
+      ],
+      "type": "table"
     }
   ],
   "refresh": "5s",
@@ -1724,8 +1983,8 @@
         "allValue": null,
         "current": {
           "selected": false,
-          "text": "6.11.1",
-          "value": "6.11.1"
+          "text": "6.10.1",
+          "value": "6.10.1"
         },
         "datasource": "Prometheus",
         "definition": "label_values(greenplum_cluster_state, version)",
@@ -1768,5 +2027,5 @@
   "timezone": "",
   "title": "Greenplum集群监控状态图",
   "uid": "wsZrd9MMk",
-  "version": 2
+  "version": 5
 }
