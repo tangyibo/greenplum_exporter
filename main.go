@@ -42,7 +42,7 @@ var scrapers = map[collector.Scraper]bool{
 var gathers prometheus.Gatherers
 
 func main() {
-	kingpin.Version("1.0.0")
+	kingpin.Version("1.1.1")
 	kingpin.HelpFlag.Short('h')
 
 	logger.AddFlags(kingpin.CommandLine)

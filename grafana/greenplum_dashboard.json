@@ -16,7 +16,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 1,
-  "iteration": 1608169350750,
+  "iteration": 1608604034254,
   "links": [],
   "panels": [
     {
@@ -46,7 +46,7 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 4,
+        "w": 3,
         "x": 0,
         "y": 0
       },
@@ -77,6 +77,109 @@
       "timeShift": null,
       "title": "运行时间",
       "type": "gauge"
+    },
+    {
+      "content": "<font size=10><center>$version</center></font>\n\n\n",
+      "datasource": "Prometheus",
+      "description": "Greenplum的版本号",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 2,
+        "x": 3,
+        "y": 0
+      },
+      "id": 18,
+      "mode": "html",
+      "pluginVersion": "7.0.5",
+      "targets": [
+        {
+          "expr": "greenplum_cluster_state",
+          "interval": "",
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "版本号",
+      "type": "text"
+    },
+    {
+      "datasource": null,
+      "description": "Greenplum数据库的总数据量",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "decmbytes"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 5,
+        "y": 0
+      },
+      "id": 52,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^Value$/",
+          "values": false
+        }
+      },
+      "pluginVersion": "7.0.5",
+      "targets": [
+        {
+          "expr": "sum(greenplum_node_database_name_mb_size)",
+          "instant": true,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "集群数据总量",
+      "transparent": true,
+      "type": "stat"
     },
     {
       "datasource": "Prometheus",
@@ -122,8 +225,8 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 3,
-        "x": 4,
+        "w": 2,
+        "x": 8,
         "y": 0
       },
       "id": 38,
@@ -197,8 +300,8 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 3,
-        "x": 7,
+        "w": 2,
+        "x": 10,
         "y": 0
       },
       "id": 40,
@@ -227,52 +330,6 @@
       "timeShift": null,
       "title": "Standby同步",
       "type": "gauge"
-    },
-    {
-      "content": "<font size=10><center>$version</center></font>\n\n\n",
-      "datasource": "Prometheus",
-      "description": "Greenplum的版本号",
-      "fieldConfig": {
-        "defaults": {
-          "custom": {},
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 2,
-        "x": 10,
-        "y": 0
-      },
-      "id": 18,
-      "mode": "html",
-      "pluginVersion": "7.0.5",
-      "targets": [
-        {
-          "expr": "greenplum_cluster_state",
-          "interval": "",
-          "legendFormat": "",
-          "refId": "A"
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "版本号",
-      "type": "text"
     },
     {
       "datasource": "Prometheus",
@@ -366,7 +423,7 @@
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
-            "mean"
+            "lastNotNull"
           ],
           "fields": "",
           "values": false
@@ -422,7 +479,7 @@
       "options": {
         "colorMode": "value",
         "graphMode": "area",
-        "justifyMode": "center",
+        "justifyMode": "auto",
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
@@ -563,7 +620,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "当前客户端数",
+      "title": "客户端数",
       "type": "stat"
     },
     {
@@ -2027,5 +2084,5 @@
   "timezone": "",
   "title": "Greenplum集群监控状态图",
   "uid": "wsZrd9MMk",
-  "version": 5
+  "version": 18
 }
