@@ -16,7 +16,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 1,
-  "iteration": 1608604034254,
+  "iteration": 1609222287631,
   "links": [],
   "panels": [
     {
@@ -55,7 +55,7 @@
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
-            "mean"
+            "last"
           ],
           "fields": "",
           "values": false
@@ -234,7 +234,7 @@
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
-            "mean"
+            "last"
           ],
           "fields": "",
           "values": false
@@ -309,7 +309,7 @@
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
-            "mean"
+            "last"
           ],
           "fields": "",
           "values": false
@@ -368,7 +368,7 @@
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
-            "lastNotNull"
+            "last"
           ],
           "fields": "",
           "values": false
@@ -378,6 +378,7 @@
       "targets": [
         {
           "expr": "greenplum_cluster_total_connections",
+          "instant": true,
           "interval": "",
           "legendFormat": "",
           "refId": "A"
@@ -544,7 +545,7 @@
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
-            "mean"
+            "last"
           ],
           "fields": "",
           "values": false
@@ -602,7 +603,7 @@
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
-            "mean"
+            "last"
           ],
           "fields": "",
           "values": false
@@ -722,7 +723,7 @@
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
-            "lastNotNull"
+            "last"
           ],
           "fields": "",
           "values": false
@@ -1221,7 +1222,7 @@
         "orientation": "horizontal",
         "reduceOptions": {
           "calcs": [
-            "lastNotNull"
+            "last"
           ],
           "fields": "",
           "values": false
@@ -1782,7 +1783,7 @@
       }
     },
     {
-      "datasource": null,
+      "datasource": "Prometheus",
       "description": "列举存在膨胀数据表的信息(需要数据库后端定期或定时使用analyzedb工具分析生成统计数据)",
       "fieldConfig": {
         "defaults": {
@@ -1884,7 +1885,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "膨胀垃圾数据表",
+      "title": "膨胀垃圾数据列表",
       "transformations": [
         {
           "id": "organize",
@@ -1932,7 +1933,7 @@
       "type": "table"
     },
     {
-      "datasource": null,
+      "datasource": "Prometheus",
       "description": "描述表数据均匀分布在各个存储节点的程度，这里只展示数据总大小大于1000M且倾斜率大于1.5%的表。",
       "fieldConfig": {
         "defaults": {
@@ -1982,7 +1983,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "存储倾斜数据表",
+      "title": "存储分布倾斜数据列表",
       "transformations": [
         {
           "id": "organize",
@@ -2084,5 +2085,5 @@
   "timezone": "",
   "title": "Greenplum集群监控状态图",
   "uid": "wsZrd9MMk",
-  "version": 18
+  "version": 33
 }
