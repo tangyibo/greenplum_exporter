@@ -46,7 +46,7 @@ const (
 			) t
 			GROUP BY schema_name,table_name
 			)tab 
-		WHERE total_size >= 104857600
+		WHERE total_size >= 1024*1024*1024
 		AND max_div_avg>1.5
 		ORDER BY total_size DESC;
 	`
