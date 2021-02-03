@@ -117,9 +117,17 @@ Flags:
 | 32 | greenplum_server_database_table_bloat_list | Gauge	| - | int | 数据膨胀列表 |	select * from gp_toolkit.gp_bloat_diag; |
 | 33 | greenplum_server_database_table_skew_list | Gauge	| - | int | 数据倾斜列表 |	select * from  gp_toolkit.gp_skew_coefficients; |
 
-### 四、使用教程
+### 四、Grafana图
 
-参考文章：https://blog.csdn.net/inrgihc/article/details/108686638
+- Dashboard
+
+Grafana Dashboard ID: 13822
+
+Grafana Dashboard URL: https://grafana.com/grafana/dashboards/13822
+
+- 配置教程
+
+可参考文章：https://blog.csdn.net/inrgihc/article/details/108686638
 
 ### 五、问题反馈
 
