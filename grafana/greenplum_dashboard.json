@@ -1934,7 +1934,7 @@
     },
     {
       "datasource": "Prometheus",
-      "description": "描述表数据均匀分布在各个存储节点的程度，这里只展示数据总大小大于1000M且倾斜率大于1.5%的表。",
+      "description": "描述表数据均匀分布在各个存储节点的程度，这里只展示数据总大小大于1024M且倾斜率大于1.5%的表。",
       "fieldConfig": {
         "defaults": {
           "custom": {
