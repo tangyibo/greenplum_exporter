@@ -3,9 +3,10 @@ package collector
 import (
 	"database/sql"
 	"errors"
+	"time"
+
 	"github.com/prometheus/client_golang/prometheus"
 	logger "github.com/prometheus/common/log"
-	"time"
 )
 
 /**
@@ -13,12 +14,12 @@ import (
  */
 
 const (
-	checkStateSql     = `SELECT count(1) from gp_dist_random('gp_id')`
-	versionSql        = `select (select regexp_matches((select (select regexp_matches((select version()), 'Greenplum Database \d{1,}\.\d{1,}\.\d{1,}'))[1] as version), '\d{1,}\.\d{1,}\.\d{1,}'))[1];`
-	masterNameSql     = `SELECT hostname from gp_segment_configuration where content=-1 and role='p'`
-	standbyNameSql    = `SELECT hostname from gp_segment_configuration where content=-1 and role='m'`
-	upTimeSql         = `select extract(epoch from now() - pg_postmaster_start_time())`
-	syncSql           = `SELECT count(*) from pg_stat_replication where state='streaming'`
+	checkStateSql        = `SELECT count(1) from gp_dist_random('gp_id')`
+	versionSql           = `select (select regexp_matches((select (select regexp_matches((select version()), 'Greenplum Database \d{1,}\.\d{1,}\.\d{1,}'))[1] as version), '\d{1,}\.\d{1,}\.\d{1,}'))[1];`
+	masterNameSql        = `SELECT hostname from gp_segment_configuration where content=-1 and role='p'`
+	standbyNameSql       = `SELECT hostname from gp_segment_configuration where content=-1 and role='m'`
+	upTimeSql            = `select extract(epoch from now() - pg_postmaster_start_time())`
+	syncSql              = `SELECT count(*) from pg_stat_replication where state='streaming'`
 	configLoadTimeSql_V6 = `SELECT pg_conf_load_time() `
 	configLoadTimeSql_V5 = `select '2020-06-16 22:09:47.078+08'::timestamp as pg_conf_load_time; `
 )
@@ -89,14 +90,15 @@ func (clusterStateScraper) Scrape(db *sql.DB, ch chan<- prometheus.Metric, ver i
 	standby, errX := scrapeStandby(db)
 	upTime, errU := scrapeUpTime(db)
 	sync, errW := scrapeSync(db)
-	configLoadTime, errY := scrapeConfigLoadTime(db, ver)
+	// configLoadTime, errY := scrapeConfigLoadTime(db, ver)
 
 	ch <- prometheus.MustNewConstMetric(stateDesc, prometheus.GaugeValue, 1, version, master, standby)
 	ch <- prometheus.MustNewConstMetric(upTimeDesc, prometheus.GaugeValue, upTime)
 	ch <- prometheus.MustNewConstMetric(syncDesc, prometheus.GaugeValue, sync)
-	ch <- prometheus.MustNewConstMetric(configLoadTimeDesc, prometheus.GaugeValue, float64(configLoadTime.UTC().Unix()))
+	// ch <- prometheus.MustNewConstMetric(configLoadTimeDesc, prometheus.GaugeValue, float64(configLoadTime.UTC().Unix()))
 
-	return combineErr(errM, errV, errU, errW, errX, errY)
+	// return combineErr(errM, errV, errU, errW, errX, errY)
+	return combineErr(errM, errV, errU, errW, errX)
 }
 
 func scrapeUpTime(db *sql.DB) (upTime float64, err error) {
@@ -197,9 +199,9 @@ func scrapeSync(db *sql.DB) (sync float64, err error) {
 }
 
 func scrapeConfigLoadTime(db *sql.DB, ver int) (time time.Time, err error) {
-	querySql:=configLoadTimeSql_V6
-	if ver < 6{
-		querySql=configLoadTimeSql_V5;
+	querySql := configLoadTimeSql_V6
+	if ver < 6 {
+		querySql = configLoadTimeSql_V5
 	}
 
 	rows, err := db.Query(querySql)

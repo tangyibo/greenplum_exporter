@@ -3,12 +3,13 @@ package collector
 import (
 	"container/list"
 	"context"
+	"database/sql"
 	"os"
 	"strings"
-	"database/sql"
+	"time"
+
 	"github.com/prometheus/client_golang/prometheus"
 	logger "github.com/prometheus/common/log"
-	"time"
 )
 
 /**
@@ -27,7 +28,7 @@ const (
 		end) as bloat_state 
 		FROM gp_toolkit.gp_bloat_diag ORDER BY bloat_state desc
 	`
-	skewTableSql=`
+	skewTableSql = `
 		SELECT current_database(),schema_name,table_name,max_div_avg,pg_size_pretty(total_size) table_size 
 		FROM (
 			SELECT schema_name,table_name,
@@ -58,8 +59,8 @@ var (
 	databaseSizeDesc = prometheus.NewDesc(
 		prometheus.BuildFQName(namespace, subSystemNode, "database_name_mb_size"), //指标的名称
 		"Total MB size of each database name in the file system",                  //帮助信息，显示在指标的上面作为注释
-		[]string{"dbname"},                                                        //定义的label名称数组
-		nil,                                                                       //定义的Labels
+		[]string{"dbname"}, //定义的label名称数组
+		nil,                //定义的Labels
 	)
 
 	tablesCountDesc = prometheus.NewDesc(
@@ -72,14 +73,14 @@ var (
 	bloatTableDesc = prometheus.NewDesc(
 		prometheus.BuildFQName(namespace, subSystemServer, "database_table_bloat_list"),
 		"Bloat table list of each database name in greenplum cluster",
-		[]string{"dbname","schema","table","relpages","exppages"},
+		[]string{"dbname", "schema", "table", "relpages", "exppages"},
 		nil,
 	)
 
 	skewTableDesc = prometheus.NewDesc(
 		prometheus.BuildFQName(namespace, subSystemServer, "database_table_skew_list"),
 		"Skew table list of each database name in greenplum cluster",
-		[]string{"dbname","schema","table","size"},
+		[]string{"dbname", "schema", "table", "size"},
 		nil,
 	)
 
@@ -142,7 +143,7 @@ func (databaseSizeScraper) Scrape(db *sql.DB, ch chan<- prometheus.Metric, ver i
 
 	for item := names.Front(); nil != item; item = item.Next() {
 		dbname := item.Value.(string)
-		count, err := queryTablesCount(dbname,ch)
+		count, err := queryTablesCount(dbname, ch)
 		if err != nil {
 			errs = append(errs, err)
 			continue
@@ -164,14 +165,14 @@ func (databaseSizeScraper) Scrape(db *sql.DB, ch chan<- prometheus.Metric, ver i
 	return combineErr(errs...)
 }
 
-func queryTablesCount(dbname string,ch chan<- prometheus.Metric) (count float64, err error) {
+func queryTablesCount(dbname string, ch chan<- prometheus.Metric) (count float64, err error) {
 	dataSourceName := os.Getenv("GPDB_DATA_SOURCE_URL")
 	newDataSourceName := strings.Replace(dataSourceName, "/postgres", "/"+dbname, 1)
 	logger.Infof("Connection string is : %s", newDataSourceName)
 	conn, errA := sql.Open("postgres", newDataSourceName)
 
 	if errA != nil {
-		err=errA
+		err = errA
 		return
 	}
 
@@ -181,7 +182,7 @@ func queryTablesCount(dbname string,ch chan<- prometheus.Metric) (count float64,
 	logger.Infof("Query Database: %s", tableCountSql)
 
 	if errB != nil {
-		err=errB
+		err = errB
 		return
 	}
 
@@ -190,20 +191,20 @@ func queryTablesCount(dbname string,ch chan<- prometheus.Metric) (count float64,
 	for rows.Next() {
 		errC := rows.Scan(&count)
 		if errC != nil {
-			err=errC
+			err = errC
 			return
 		}
 	}
 
-	errD := queryBloatTables(conn, ch)
-	if errD != nil {
-		err=errD
-		return
-	}
+	// errD := queryBloatTables(conn, ch)
+	// if errD != nil {
+	// 	err=errD
+	// 	return
+	// }
 
 	errF := querySkewTables(conn, ch)
 	if errF != nil {
-		err=errF
+		err = errF
 		return
 	}
 
@@ -223,9 +224,9 @@ func queryBloatTables(conn *sql.DB, ch chan<- prometheus.Metric) error {
 	errs := make([]error, 0)
 
 	for rows.Next() {
-		var dbname, schema, table ,relpages, exppages string
+		var dbname, schema, table, relpages, exppages string
 		var bloatstate float64
-		err = rows.Scan(&dbname,&schema,&table,&relpages,&exppages,&bloatstate)
+		err = rows.Scan(&dbname, &schema, &table, &relpages, &exppages, &bloatstate)
 		if err != nil {
 			errs = append(errs, err)
 			continue
@@ -250,9 +251,9 @@ func querySkewTables(conn *sql.DB, ch chan<- prometheus.Metric) error {
 	errs := make([]error, 0)
 
 	for rows.Next() {
-		var dbname, schema, table , size string
+		var dbname, schema, table, size string
 		var slope float64
-		err = rows.Scan(&dbname,&schema,&table,&slope,&size)
+		err = rows.Scan(&dbname, &schema, &table, &slope, &size)
 		if err != nil {
 			errs = append(errs, err)
 			continue
