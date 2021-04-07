@@ -111,7 +111,7 @@ func (databaseSizeScraper) Name() string {
 
 func (databaseSizeScraper) Scrape(db *sql.DB, ch chan<- prometheus.Metric, ver int) error {
 	ctx := context.Background()
-	ctx, cancel := context.WithTimeout(ctx, time.Second*2)
+	ctx, cancel := context.WithTimeout(ctx, time.Second*10)
 
 	defer cancel()
 
