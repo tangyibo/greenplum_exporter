@@ -18,7 +18,7 @@ const (
 	segmentConfigSql_V6 = `select dbid,content,role,preferred_role,mode,status,port,hostname,address,datadir from gp_segment_configuration;`
 	segmentConfigSql_V5 = `select dbid,content,role,preferred_role,mode,status,port,hostname,address,null as datadir from gp_segment_configuration;`
 
-	segmentDiskFreeSizeSql = `SELECT dfhostname as segment_hostname,sum(dfspace)/count(dfspace)/(1024*1024) as segment_disk_free_gb from gp_toolkit.gp_disk_free GROUP BY dfhostname;`
+	segmentDiskFreeSizeSql = `SELECT dfhostname as segment_hostname,sum(dfspace)/(1024*1024) as segment_disk_free_gb from gp_toolkit.gp_disk_free GROUP BY dfhostname;`
 )
 
 var (
@@ -41,8 +41,8 @@ var (
 	)
 
 	segmentDiskFreeSizeDesc = prometheus.NewDesc(
-		prometheus.BuildFQName(namespace, subSystemNode, "segment_disk_free_mb_size"), //指标的名称
-		"Total MB size of each segment node free size of disk in the file system",     //帮助信息，显示在指标的上面作为注释
+		prometheus.BuildFQName(namespace, subSystemNode, "segment_disk_free_gb_size"), //指标的名称
+		"Total GB size of each segment node free size of disk in the file system",     //帮助信息，显示在指标的上面作为注释
 		[]string{"hostname"}, //定义的label名称数组
 		nil,                  //定义的Labels
 	)
