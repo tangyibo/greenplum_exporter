@@ -3,9 +3,10 @@ package collector
 import (
 	"context"
 	"database/sql"
+	"time"
+
 	"github.com/prometheus/client_golang/prometheus"
 	logger "github.com/prometheus/common/log"
-	"time"
 )
 
 /**
@@ -14,8 +15,8 @@ import (
  */
 
 const (
-	segmentConfigSql_V6       = `select dbid,content,role,preferred_role,mode,status,port,hostname,address,datadir from gp_segment_configuration;`
-	segmentConfigSql_V5       = `select dbid,content,role,preferred_role,mode,status,port,hostname,address,null as datadir from gp_segment_configuration;`
+	segmentConfigSql_V6 = `select dbid,content,role,preferred_role,mode,status,port,hostname,address,datadir from gp_segment_configuration;`
+	segmentConfigSql_V5 = `select dbid,content,role,preferred_role,mode,status,port,hostname,address,null as datadir from gp_segment_configuration;`
 
 	segmentDiskFreeSizeSql = `SELECT dfhostname as segment_hostname,sum(dfspace)/count(dfspace)/(1024*1024) as segment_disk_free_gb from gp_toolkit.gp_disk_free GROUP BY dfhostname;`
 )
@@ -42,8 +43,8 @@ var (
 	segmentDiskFreeSizeDesc = prometheus.NewDesc(
 		prometheus.BuildFQName(namespace, subSystemNode, "segment_disk_free_mb_size"), //指标的名称
 		"Total MB size of each segment node free size of disk in the file system",     //帮助信息，显示在指标的上面作为注释
-		[]string{"hostname"},                                                          //定义的label名称数组
-		nil,                                                                           //定义的Labels
+		[]string{"hostname"}, //定义的label名称数组
+		nil,                  //定义的Labels
 	)
 )
 
@@ -70,9 +71,9 @@ func scrapeSegmentConfig(db *sql.DB, ch chan<- prometheus.Metric, ver int) error
 
 	defer cancel()
 
-	querySql:=segmentConfigSql_V6
-	if ver < 6{
-		querySql=segmentConfigSql_V5;
+	querySql := segmentConfigSql_V6
+	if ver < 6 {
+		querySql = segmentConfigSql_V5
 	}
 
 	logger.Infof("Query Database: %s", querySql)
@@ -107,7 +108,7 @@ func scrapeSegmentConfig(db *sql.DB, ch chan<- prometheus.Metric, ver int) error
 
 func scrapeSegmentDiskFree(db *sql.DB, ch chan<- prometheus.Metric) error {
 	ctx := context.Background()
-	ctx, cancel := context.WithTimeout(ctx, time.Second*2)
+	ctx, cancel := context.WithTimeout(ctx, time.Second*10)
 
 	defer cancel()
 
