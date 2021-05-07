@@ -202,11 +202,11 @@ func queryTablesCount(dbname string, ch chan<- prometheus.Metric) (count float64
 	// 	return
 	// }
 
-	errF := querySkewTables(conn, ch)
-	if errF != nil {
-		err = errF
-		return
-	}
+	// errF := querySkewTables(conn, ch)
+	// if errF != nil {
+	// 	err = errF
+	// 	return
+	// }
 
 	return
 }
