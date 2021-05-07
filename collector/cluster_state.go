@@ -90,15 +90,14 @@ func (clusterStateScraper) Scrape(db *sql.DB, ch chan<- prometheus.Metric, ver i
 	standby, errX := scrapeStandby(db)
 	upTime, errU := scrapeUpTime(db)
 	sync, errW := scrapeSync(db)
-	// configLoadTime, errY := scrapeConfigLoadTime(db, ver)
+	configLoadTime, errY := scrapeConfigLoadTime(db, ver)
 
 	ch <- prometheus.MustNewConstMetric(stateDesc, prometheus.GaugeValue, 1, version, master, standby)
 	ch <- prometheus.MustNewConstMetric(upTimeDesc, prometheus.GaugeValue, upTime)
 	ch <- prometheus.MustNewConstMetric(syncDesc, prometheus.GaugeValue, sync)
-	// ch <- prometheus.MustNewConstMetric(configLoadTimeDesc, prometheus.GaugeValue, float64(configLoadTime.UTC().Unix()))
+	ch <- prometheus.MustNewConstMetric(configLoadTimeDesc, prometheus.GaugeValue, float64(configLoadTime.UTC().Unix()))
 
-	// return combineErr(errM, errV, errU, errW, errX, errY)
-	return combineErr(errM, errV, errU, errW, errX)
+	return combineErr(errM, errV, errU, errW, errX, errY)
 }
 
 func scrapeUpTime(db *sql.DB) (upTime float64, err error) {
