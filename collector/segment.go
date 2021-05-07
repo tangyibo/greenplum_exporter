@@ -18,7 +18,7 @@ const (
 	segmentConfigSql_V6 = `select dbid,content,role,preferred_role,mode,status,port,hostname,address,datadir from gp_segment_configuration;`
 	segmentConfigSql_V5 = `select dbid,content,role,preferred_role,mode,status,port,hostname,address,null as datadir from gp_segment_configuration;`
 
-	segmentDiskFreeSizeSql = `SELECT dfhostname as segment_hostname,sum(dfspace)/(1024*1024) as segment_disk_free_gb from gp_toolkit.gp_disk_free GROUP BY dfhostname;`
+	segmentDiskFreeSizeSql = `SELECT dfhostname as segment_hostname,min(dfspace)/(1024*1024) as segment_disk_free_gb from gp_toolkit.gp_disk_free GROUP BY dfhostname;`
 )
 
 var (
