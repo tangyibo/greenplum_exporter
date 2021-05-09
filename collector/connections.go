@@ -3,6 +3,7 @@ package collector
 import (
 	"database/sql"
 	"errors"
+
 	"github.com/prometheus/client_golang/prometheus"
 	logger "github.com/prometheus/common/log"
 )
@@ -14,10 +15,10 @@ import (
 const (
 	connectionsSql_V6 = `select 
                          count(*) total, 
-                         count(*) filter(where query='<IDLE>') idle, 
-                         count(*) filter(where query<>'<IDLE>') active,
-                         count(*) filter(where query<>'<IDLE>' and not waiting) running,
-                         count(*) filter(where query<>'<IDLE>' and waiting) waiting
+                         count(*) filter(where state<>'active') idle, 
+                         count(*) filter(where state='active') active,
+                         count(*) filter(where state='active' and not waiting) running,
+                         count(*) filter(where state='active' and waiting) waiting
 						 from pg_stat_activity where pid <> pg_backend_pid();`
 	connectionsSql_V5 = `select 
                          count(*) total, 
@@ -71,13 +72,13 @@ func (connectionsScraper) Name() string {
 }
 
 func (connectionsScraper) Scrape(db *sql.DB, ch chan<- prometheus.Metric, ver int) error {
-	querySql:=connectionsSql_V6
-	if ver < 6{
-		querySql=connectionsSql_V5;
+	querySql := connectionsSql_V6
+	if ver < 6 {
+		querySql = connectionsSql_V5
 	}
 
 	rows, err := db.Query(querySql)
-	logger.Infof("Query Database: %s",querySql)
+	logger.Infof("Query Database: %s", querySql)
 
 	if err != nil {
 		return err
