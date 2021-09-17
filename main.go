@@ -26,7 +26,7 @@ var scrapers = map[collector.Scraper]bool{
 	collector.NewClusterStateScraper():  true,
 	collector.NewSegmentScraper():       true,
 	collector.NewDatabaseSizeScraper():  true,
-	collector.NewLocksScraper():         false,
+	collector.NewLocksScraper():         true,
 	collector.NewConnectionsScraper():   true,
 	collector.NewMaxConnScraper():       true,
 	collector.NewConnDetailScraper():    true,
