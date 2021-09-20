@@ -2,6 +2,7 @@ package collector
 
 import (
 	"database/sql"
+
 	"github.com/prometheus/client_golang/prometheus"
 	logger "github.com/prometheus/common/log"
 )
@@ -13,8 +14,8 @@ import (
 const (
 	connectionsByUserSql_V6 = `select usename, 
                                       count(*) total, 
-                                      count(*) filter(where query='<IDLE>') idle, 
-                                      count(*) filter(where query<>'<IDLE>') active 
+                                      count(*) filter(where state<>'active') idle, 
+                                      count(*) filter(where state='active') active 
 							   from pg_stat_activity group by 1;`
 	connectionsByUserSql_V5 = `select usename, 
                                       count(*) total, 
@@ -23,8 +24,8 @@ const (
                                from pg_stat_activity group by 1;`
 	connectionsByClientAddressSql_V6 = `select client_addr,
                                         count(*) total,
-                                        count(*) filter(where query='<IDLE>') idle,
-                                        count(*) filter(where query<>'<IDLE>') active
+                                        count(*) filter(where state<>'active') idle,
+                                        count(*) filter(where state='active') active
 								from pg_stat_activity where pid <> pg_backend_pid() group by 1;`
 	connectionsByClientAddressSql_V5 = `select client_addr,
                                                count(*) total,
@@ -101,9 +102,9 @@ func (connectionsDetailScraper) Scrape(db *sql.DB, ch chan<- prometheus.Metric, 
 }
 
 func scrapeLoadByUser(db *sql.DB, ch chan<- prometheus.Metric, ver int) error {
-	querySql:=connectionsByUserSql_V6
-	if ver < 6{
-		querySql=connectionsByUserSql_V5;
+	querySql := connectionsByUserSql_V6
+	if ver < 6 {
+		querySql = connectionsByUserSql_V5
 	}
 
 	rows, err := db.Query(querySql)
@@ -143,9 +144,9 @@ func scrapeLoadByUser(db *sql.DB, ch chan<- prometheus.Metric, ver int) error {
 }
 
 func scrapeLoadByClient(db *sql.DB, ch chan<- prometheus.Metric, ver int) error {
-	querySql:=connectionsByClientAddressSql_V6
-	if ver < 6{
-		querySql=connectionsByClientAddressSql_V5;
+	querySql := connectionsByClientAddressSql_V6
+	if ver < 6 {
+		querySql = connectionsByClientAddressSql_V5
 	}
 
 	rows, err := db.Query(querySql)

@@ -2,9 +2,10 @@ package collector
 
 import (
 	"database/sql"
+	"time"
+
 	"github.com/prometheus/client_golang/prometheus"
 	logger "github.com/prometheus/common/log"
-	"time"
 )
 
 /**
@@ -86,9 +87,9 @@ func (locksScraper) Name() string {
 }
 
 func (locksScraper) Scrape(db *sql.DB, ch chan<- prometheus.Metric, ver int) error {
-	querySql :=locksQuerySql_V6;
-	if ver < 6{
-		querySql=locksQuerySql_V5;
+	querySql := locksQuerySql_V6
+	if ver < 6 {
+		querySql = locksQuerySql_V5
 	}
 
 	rows, err := db.Query(querySql)

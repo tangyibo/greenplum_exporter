@@ -2,12 +2,12 @@ package main
 
 import (
 	"greenplum-exporter/collector"
+	"net/http"
 
 	"github.com/prometheus/client_golang/prometheus"
-	logger "github.com/prometheus/common/log"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	logger "github.com/prometheus/common/log"
 	"gopkg.in/alecthomas/kingpin.v2"
-	"net/http"
 )
 
 /**
@@ -23,15 +23,15 @@ var (
 )
 
 var scrapers = map[collector.Scraper]bool{
-	collector.NewLocksScraper():         true,
 	collector.NewClusterStateScraper():  true,
+	collector.NewSegmentScraper():       true,
 	collector.NewDatabaseSizeScraper():  true,
+	collector.NewLocksScraper():         true,
 	collector.NewConnectionsScraper():   true,
 	collector.NewMaxConnScraper():       true,
-	collector.NewSegmentScraper():       true,
 	collector.NewConnDetailScraper():    true,
-	collector.NewUsersScraper():         true,
-	collector.NewBgWriterStateScraper(): true,
+	collector.NewUsersScraper():         false,
+	collector.NewBgWriterStateScraper(): false,
 
 	collector.NewSystemScraper():        false,
 	collector.NewQueryScraper():         false,
