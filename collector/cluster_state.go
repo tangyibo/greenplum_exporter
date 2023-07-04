@@ -28,14 +28,15 @@ var (
 	stateDesc = prometheus.NewDesc(
 		prometheus.BuildFQName(namespace, subSystemCluster, "state"),
 		"Whether the GreenPlum database is accessible",
-		[]string{"version", "master", "standby"},
+		[]string{"version", "master", "standby"}, // variableLables
 		nil,
 	)
 
 	upTimeDesc = prometheus.NewDesc(
 		prometheus.BuildFQName(namespace, subSystemCluster, "uptime"),
 		"Duration that the GreenPlum database have been started since last up in second",
-		nil, nil,
+		nil,
+		nil,
 	)
 
 	syncDesc = prometheus.NewDesc(
@@ -68,7 +69,7 @@ func (clusterStateScraper) Scrape(db *sql.DB, ch chan<- prometheus.Metric, ver i
 	logger.Infof("Query Database: %s", checkStateSql)
 
 	if err != nil {
-		ch <- prometheus.MustNewConstMetric(stateDesc, prometheus.GaugeValue, 0, "", "")
+		ch <- prometheus.MustNewConstMetric(stateDesc, prometheus.GaugeValue, 0, "", "", "")
 		logger.Errorf("get metrics for scraper, error:%v", err.Error())
 		return err
 	}
@@ -79,7 +80,7 @@ func (clusterStateScraper) Scrape(db *sql.DB, ch chan<- prometheus.Metric, ver i
 		var count int
 		err = rows.Scan(&count)
 		if err != nil {
-			ch <- prometheus.MustNewConstMetric(stateDesc, prometheus.GaugeValue, 0, "", "")
+			ch <- prometheus.MustNewConstMetric(stateDesc, prometheus.GaugeValue, 0, "", "", "")
 			logger.Errorf("get metrics for scraper, error:%v", err.Error())
 			return err
 		}
