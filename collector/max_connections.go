@@ -56,7 +56,7 @@ func (maxConnScraper) Scrape(db *sql.DB, ch chan<- prometheus.Metric, ver int) e
 
 func showConnections(db *sql.DB, sql string) (conn float64, err error) {
 	rows, err := db.Query(sql)
-	logger.Infof("Query Database: %s",sql)
+	logger.Infof("Query Database: %s", sql)
 
 	if err != nil {
 		return
