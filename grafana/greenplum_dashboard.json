@@ -1,4 +1,46 @@
 {
+  "__inputs": [
+      {
+      "name": "DS_PROMETHEUS",
+      "label": "Prometheus",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "prometheus",
+      "pluginName": "Prometheus"
+    }
+    ],
+  "__requires": [
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "6.4.2"
+    },
+    {
+      "type": "panel",
+      "id": "graph",
+      "name": "Graph",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "heatmap",
+      "name": "Heatmap",
+      "version": ""
+    },
+    {
+      "type": "datasource",
+      "id": "prometheus",
+      "name": "Prometheus",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "text",
+      "name": "Text",
+      "version": ""
+    }
+  ],
   "annotations": {
     "list": [
       {
@@ -13,14 +55,14 @@
     ]
   },
   "editable": true,
-  "gnetId": null,
+  "gnetId": 13822,
   "graphTooltip": 0,
   "id": 1,
   "iteration": 1609222287631,
   "links": [],
   "panels": [
     {
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "description": "Greenplum截至到当前的运行总时长",
       "fieldConfig": {
         "defaults": {
@@ -80,7 +122,7 @@
     },
     {
       "content": "<font size=10><center>$version</center></font>\n\n\n",
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "description": "Greenplum的版本号",
       "fieldConfig": {
         "defaults": {
@@ -125,7 +167,7 @@
       "type": "text"
     },
     {
-      "datasource": null,
+      "datasource": "${DS_PROMETHEUS}",
       "description": "Greenplum数据库的总数据量",
       "fieldConfig": {
         "defaults": {
@@ -182,7 +224,7 @@
       "type": "stat"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "description": "Greenplum集群的Master节点是否可连通",
       "fieldConfig": {
         "defaults": {
@@ -257,7 +299,7 @@
       "type": "gauge"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "description": "Greenplum集群的Standby节点是否正在保持与Master的同步",
       "fieldConfig": {
         "defaults": {
@@ -332,7 +374,7 @@
       "type": "gauge"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "description": "当前连接总数",
       "fieldConfig": {
         "defaults": {
@@ -390,7 +432,7 @@
       "type": "stat"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "description": "Greenplum数据存储节点的剩余可用存储空间",
       "fieldConfig": {
         "defaults": {
@@ -447,7 +489,7 @@
       "type": "stat"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "description": "数据库配置最近加载时间",
       "fieldConfig": {
         "defaults": {
@@ -509,7 +551,7 @@
       "type": "stat"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "description": "当前在线连接的账号总个数",
       "fieldConfig": {
         "defaults": {
@@ -566,7 +608,7 @@
       "type": "stat"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "description": "当前数据库的客户端总数（按IP统计）",
       "fieldConfig": {
         "defaults": {
@@ -625,7 +667,7 @@
       "type": "stat"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "description": "数据库当前的用户账号总个数",
       "fieldConfig": {
         "defaults": {
@@ -685,7 +727,7 @@
       "type": "stat"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "description": "数据库关注指标",
       "fieldConfig": {
         "defaults": {
@@ -754,7 +796,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "description": "展示客户端连接数的历史趋势信息",
       "fieldConfig": {
         "defaults": {
@@ -871,7 +913,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "decimals": 0,
       "description": "展示各个账号的活动连接数趋势信息",
       "fieldConfig": {
@@ -968,7 +1010,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "description": "展示各数据库内表的总数目历史趋势信息",
       "fieldConfig": {
         "defaults": {
@@ -1080,7 +1122,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "description": "展示在线账号连接数的历史趋势信息",
       "fieldConfig": {
         "defaults": {
@@ -1188,7 +1230,7 @@
       }
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "description": "展示集群当前各库内表总数目",
       "fieldConfig": {
         "defaults": {
@@ -1245,7 +1287,7 @@
       "type": "bargauge"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "description": "展示当前各库占用数据存储空间大小的柱状图",
       "fieldConfig": {
         "defaults": {
@@ -1304,7 +1346,7 @@
     },
     {
       "cacheTimeout": null,
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "description": "列举集群的Segment实例在线状态",
       "fieldConfig": {
         "defaults": {
@@ -1420,7 +1462,7 @@
       "type": "table"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "description": "列举集群的Segment实例同步模式",
       "fieldConfig": {
         "defaults": {
@@ -1546,7 +1588,7 @@
       "type": "table"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "description": "列举了当前监听的客户端访问数据库操作时的锁信息",
       "fieldConfig": {
         "defaults": {
@@ -1691,7 +1733,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -1783,7 +1825,7 @@
       }
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "description": "列举存在膨胀数据表的信息(需要数据库后端定期或定时使用analyzedb工具分析生成统计数据)",
       "fieldConfig": {
         "defaults": {
@@ -1933,7 +1975,7 @@
       "type": "table"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "description": "描述表数据均匀分布在各个存储节点的程度，这里只展示数据总大小大于1024M且倾斜率大于1.5%的表。",
       "fieldConfig": {
         "defaults": {
@@ -2044,7 +2086,7 @@
           "text": "6.10.1",
           "value": "6.10.1"
         },
-        "datasource": "Prometheus",
+        "datasource": "${DS_PROMETHEUS}",
         "definition": "label_values(greenplum_cluster_state, version)",
         "hide": 2,
         "includeAll": false,
@@ -2085,5 +2127,6 @@
   "timezone": "",
   "title": "Greenplum集群监控状态图",
   "uid": "wsZrd9MMk",
-  "version": 33
+  "version": 3,
+  "description": "Greenplum集群监控状态图"
 }
